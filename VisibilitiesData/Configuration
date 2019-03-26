@@ -1,0 +1,12 @@
+Grid Size      = 1024.0
+Cell Size      = 4.848136811095360e-06;
+Frequency HZ   = 300000000.0
+Speed of Light = 299792458.0
+
+Wavelengths to Meters = Frequency HZ / Speed of Light
+
+UV to Pixels = Grid Size * Cell Size
+
+Dont forget right ascension (negative sign in front of u coordinate prior to wavelength scale)
+
+UV Scale visibility coordinates during gridding to go from meters to pixels (multiplication)

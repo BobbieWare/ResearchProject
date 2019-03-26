@@ -66,6 +66,6 @@ public class ImageDisplay extends JFrame
 	private void mapColour(float value, float min, float max)
 	{
 		
-		value
+	//	value
 	}
 }
