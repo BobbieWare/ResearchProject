@@ -29,7 +29,7 @@ public class iFFT
 		double omegaImag;
 		int n2 = n / 2;
 		int nu1 = logBase2OfN - 1;
-		double tReal, tImag, x, t;
+		double tReal, tImag, xReal, xImag, uReal, uImag;
 
 		double constant = -2 * Math.PI;
 
@@ -38,39 +38,32 @@ public class iFFT
 		for (int l = s; l <= logBase2OfN; l++)
 		{
 			m = (int) Math.pow(2, s);
+			
 			omegaReal = Math.cos((2 * Math.PI) / m);
 			omegaImag = -Math.sin((2 * Math.PI) / m);
-			
-			for (int k = 0; k < (n*m); k++)
+
+			for (int k = 0; k < (n * m); k++)
 			{
-				x = 1;
-				for (int j = 0; j < m/2; j++)
+				xReal = 1;
+				xImag = 1;
+				for (int j = 0; j < m / 2; j++)
 				{
-					tReal = x * inputReal[k+j+m/2];
+					tReal = (xReal * inputReal[k + j + m / 2]) - (xImag * inputImag[k + j + m / 2]);
+					tImag = (xReal * inputImag[k + j + m / 2]) + (xImag * inputImag[k + j + m / 2]);
+
+					uReal = inputReal[k + j];
+					uImag = inputImag[k + j];
+					
+					inputReal[k+j] = tReal + uReal;
+					inputImag[k+j] = tImag + uImag;
+					
+					inputReal[k+j+m/2] = tReal - uReal;
+					inputImag[k+j+m/2] = tImag - uImag;
+					
+					xReal = (xReal * omegaReal) - (xImag * omegaImag);
+					xImag = (xReal * omegaImag) + (xImag * omegaReal);
 				}
 			}
-			// while (s < n)
-			// {
-			// for (int i = 1; i <= n2; i++)
-			// {
-			// p = bitreverseReference(s >> nu1, logBase2OfN);
-			// // direct FFT or inverse FFT
-			// arg = constant * p / n;
-			// cos = Math.cos(arg);
-			// sin = Math.sin(arg);
-			// tReal = inputReal[s + n2] * cos + inputImag[s + n2] * sin;
-			// tImag = inputImag[s + n2] * cos - inputReal[s + n2] * sin;
-			// inputReal[s + n2] = inputReal[s] - tReal;
-			// inputImag[s + n2] = inputImag[s] - tImag;
-			// inputReal[s] += tReal;
-			// inputImag[s] += tImag;
-			// s++;
-			// }
-			// s += n2;
-			// }
-			// s = 0;
-			// nu1--;
-			// n2 /= 2;
 		}
 
 		// Second phase - recombination
@@ -90,21 +83,6 @@ public class iFFT
 			}
 			s++;
 		}
-
-		// Here I have to mix xReal and xImag to have an array (yes, it should
-		// be possible to do this stuff in the earlier parts of the code, but
-		// it's here to readibility).
-		double[] newArray = new double[inputReal.length * 2];
-		double radice = 1 / Math.sqrt(n);
-		for (int i = 0; i < newArray.length; i += 2)
-		{
-			int i2 = i / 2;
-			// I used Stephen Wolfram's Mathematica as a reference so I'm going
-			// to normalize the output while I'm copying the elements.
-			newArray[i] = inputReal[i2] * radice;
-			newArray[i + 1] = inputImag[i2] * radice;
-		}
-		return newArray;
 	}
 
 	/**
