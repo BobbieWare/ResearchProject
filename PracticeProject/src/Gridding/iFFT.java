@@ -65,6 +65,7 @@ public class iFFT
 				}
 			}
 		}
+		return inputImag;
 	}
 
 	/**
@@ -80,6 +81,7 @@ public class iFFT
 
 			}
 		}
+		return array;
 
 	}
 }
