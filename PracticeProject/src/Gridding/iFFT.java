@@ -38,7 +38,7 @@ public class iFFT
 		for (int l = s; l <= logBase2OfN; l++)
 		{
 			m = (int) Math.pow(2, s);
-			
+
 			omegaReal = Math.cos((2 * Math.PI) / m);
 			omegaImag = -Math.sin((2 * Math.PI) / m);
 
@@ -53,52 +53,33 @@ public class iFFT
 
 					uReal = inputReal[k + j];
 					uImag = inputImag[k + j];
-					
-					inputReal[k+j] = tReal + uReal;
-					inputImag[k+j] = tImag + uImag;
-					
-					inputReal[k+j+m/2] = tReal - uReal;
-					inputImag[k+j+m/2] = tImag - uImag;
-					
+
+					inputReal[k + j] = tReal + uReal;
+					inputImag[k + j] = tImag + uImag;
+
+					inputReal[k + j + m / 2] = tReal - uReal;
+					inputImag[k + j + m / 2] = tImag - uImag;
+
 					xReal = (xReal * omegaReal) - (xImag * omegaImag);
 					xImag = (xReal * omegaImag) + (xImag * omegaReal);
 				}
 			}
-		}
-
-		// Second phase - recombination
-		s = 0;
-		int r;
-		while (s < n)
-		{
-			r = bitreverseReference(s, logBase2OfN);
-			if (r > s)
-			{
-				tReal = inputReal[s];
-				tImag = inputImag[s];
-				inputReal[s] = inputReal[r];
-				inputImag[s] = inputImag[r];
-				inputReal[r] = tReal;
-				inputImag[r] = tImag;
-			}
-			s++;
 		}
 	}
 
 	/**
 	 * The reference bitreverse function.
 	 */
-	private static int bitreverseReference(int j, int nu)
+	private static double[] bitreverseReference(double[] array)
 	{
-		int j2;
-		int j1 = j;
-		int k = 0;
-		for (int i = 1; i <= nu; i++)
+		for (int k = 0; k < array.length; k++)
 		{
-			j2 = j1 / 2;
-			k = 2 * k + j1 - 2 * j2;
-			j1 = j2;
+			int r = 0;
+			for (int j = 0; j < array.length; j++)
+			{
+
+			}
 		}
-		return k;
+
 	}
 }
