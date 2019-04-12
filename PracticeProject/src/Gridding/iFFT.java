@@ -4,24 +4,18 @@ public class iFFT
 {
 
 	/**
-	 * The Fast Fourier Transform (generic version, with NO optimizations).
+	 * The Fast Fourier Transform
 	 *
 	 * @param inputReal
 	 *            an array of length n, the real part
 	 * @param inputImag
 	 *            an array of length n, the imaginary part
-	 * @param DIRECT
-	 *            TRUE = direct transform, FALSE = inverse transform
 	 * @return a new array of length 2n
 	 */
-	public static double[] fft(final double[] inputReal, double[] inputImag, boolean DIRECT)
+	public static double[] fft(final double[] inputReal, double[] inputImag)
 	{
-		// - n is the dimension of the problem
-		// - nu is its logarithm in base e
 		int n = inputReal.length;
 
-		// Declaration and initialization of the variables
-		// logBase2OfN should be an integer so no information lost in the cast
 		int logBase2OfN = (int) (Math.log(n) / Math.log(2.0));
 		int m;
 
@@ -31,7 +25,7 @@ public class iFFT
 		int nu1 = logBase2OfN - 1;
 		double tReal, tImag, xReal, xImag, uReal, uImag;
 
-		double constant = -2 * Math.PI;
+		double constant = -2 * Math.PI; // For an inverse transform
 
 		// First phase - calculation
 		int s = 1;
