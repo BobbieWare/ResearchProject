@@ -61,11 +61,8 @@ public class iFFT
 		}
 		return inputImag;
 	}
-
-	/**
-	 * The reference bitreverse function.
-	 */
-	private static double[] bitreverseReference(double[] array)
+	
+	private static double[] bitReverse(double[] array)
 	{
 		for (int k = 0; k < array.length; k++)
 		{
