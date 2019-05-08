@@ -10,7 +10,7 @@ import java.util.LinkedList;
 /*
  * This class ------------------------------------------
  */
-public class Gridder
+public class GridderUsingComplex
 {
 	private final static int gridSize = 1024;
 	private final static int heightOfSupport = 7;

@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 
-public class Pipeline
+public class PipelineUsingComplex
 {
 	public static void main(String[] args)
 	{
@@ -12,9 +12,9 @@ public class Pipeline
 
 		for (int i = 0; i < 10; i++)
 		{
-			Complex[][] grid = Gridder.grid();
+			Complex[][] grid = GridderUsingComplex.grid();
 
-			Complex[][] transformedGrid = iFFT.twoDimensionifft(grid);
+			Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
 		}
 		
 		System.out.println(System.nanoTime()-time);

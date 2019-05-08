@@ -1,16 +1,17 @@
-package Using2grids;
+package MultiThreaded;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /*
  * This class ------------------------------------------
  */
-public class Gridder
+public class Gridder2GridsMultiThreaded
 {
 	private final static int gridSize = 1024;
 	private final static int heightOfSupport = 7;
@@ -23,10 +24,10 @@ public class Gridder
 	/*
 	 * Loads in the visibilities data from a given csv file.
 	 */
-	private static LinkedList<double[]> loadVisibilities()
+	private static ArrayList<double[]> loadVisibilities()
 	{
 		// Where the data will be stored
-		LinkedList<double[]> visibilities = new LinkedList<double[]>();
+		ArrayList<double[]> visibilities = new ArrayList<double[]>();
 
 		// Amount of visibilities.
 		int visibilitiesCount;
@@ -112,7 +113,7 @@ public class Gridder
 		}
 
 		// Visibilities
-		LinkedList<double[]> visibilities = loadVisibilities();
+		ArrayList<double[]> visibilities = loadVisibilities();
 
 		for (double[] visibility : visibilities)
 		{

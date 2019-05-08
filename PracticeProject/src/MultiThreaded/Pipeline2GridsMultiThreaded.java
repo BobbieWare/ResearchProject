@@ -1,10 +1,10 @@
-package Using2grids;
+package MultiThreaded;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 
-public class Pipeline
+public class Pipeline2GridsMultiThreaded
 {
 	public static void main(String[] args)
 	{
@@ -13,9 +13,9 @@ public class Pipeline
 
 		for (int i = 0; i < 10; i++)
 		{
-			double[][][] grid = Gridder.grid();
+			double[][][] grid = Gridder2GridsMultiThreaded.grid();
 
-			double[][][] transformedGrid = iFFT.twoDimensionifft(grid[0], grid[1]);
+			double[][][] transformedGrid = iFFT2GridsMultiThreaded.twoDimensionifft(grid[0], grid[1]);
 		}
 
 		System.out.println(System.nanoTime() - time);

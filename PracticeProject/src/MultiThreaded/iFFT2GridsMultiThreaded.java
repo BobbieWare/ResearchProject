@@ -1,7 +1,7 @@
-package Using2grids;
+package MultiThreaded;
 
 
-public class iFFT
+public class iFFT2GridsMultiThreaded
 {
 	public static double[][][] twoDimensionifft(double[][] inputReal, double[][] inputImag)
 	{

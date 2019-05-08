@@ -1,6 +1,6 @@
 package UsingComplex;
 
-public class iFFT
+public class iFFTUsingComplex
 {
 	public static Complex[][] twoDimensionifft(Complex[][] input)
 	{
