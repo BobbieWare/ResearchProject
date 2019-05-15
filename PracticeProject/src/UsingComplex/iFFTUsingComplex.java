@@ -54,7 +54,7 @@ public class iFFTUsingComplex
 
 		for (int m = 2; m <= n; m *= 2)
 		{
-			Complex omega = new Complex(Math.cos((-2 * Math.PI) / m), -Math.sin((-2 * Math.PI) / m));
+			Complex omega = new Complex(Math.cos((2 * Math.PI) / m), Math.sin((2 * Math.PI) / m));
 
 			for (int k = 0; k < n; k += m)
 			{

@@ -75,7 +75,7 @@ public class RadixTwo2DRowColumn extends FFT2D
     public static void main(String[] args)
     {
         System.out.println("Starting RadixTwo2DRowColumn");
-        int numChannels = 4;
+        int numChannels = 8;
         RadixTwo2DRowColumn fft = new RadixTwo2DRowColumn(numChannels);
         Complex[][] original = new Complex[numChannels][numChannels];
         for (int row=0; row<numChannels; row++)

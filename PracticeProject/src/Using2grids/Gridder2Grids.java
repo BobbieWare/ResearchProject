@@ -32,7 +32,7 @@ public class Gridder2Grids
 		int visibilitiesCount;
 
 		// File name
-		String csvFile = "Visibilities1.csv";
+		String csvFile = "Visibilities.csv";
 		String line = "";
 		String cvsSpilt = ",";
 
@@ -123,7 +123,7 @@ public class Gridder2Grids
 			int xMax = (heightOfSupport - 1) / 2;
 			int yMin = -(widthOfSupport - 1) / 2;
 			int yMax = (widthOfSupport - 1) / 2;
-
+			
 			for (int i = xMin; i <= xMax; i++)
 			{
 				for (int j = yMin; j <= yMax; j++)

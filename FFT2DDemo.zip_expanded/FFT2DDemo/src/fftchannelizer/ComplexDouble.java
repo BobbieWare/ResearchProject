@@ -93,7 +93,7 @@ public final class ComplexDouble extends Complex
     public Complex getRootOfUnity(double order)
     {
         double angle = Math.PI * 2.0 / order;
-        return new ComplexDouble(Math.cos(angle), -Math.sin(angle));
+        return new ComplexDouble(Math.cos(angle), Math.sin(angle));
     }
 
     public Complex getCopy()

@@ -36,16 +36,9 @@ public class RadixTwoFFT extends FFT
     public Complex[] ditTransform(Complex[] original)
     {
         int n = original.length;
-        if (n != numChannels)
-        {
-            throw new IllegalArgumentException("Invalid FFT size: " + n);
-        }
-        // copy original to a working array
+        
         Complex[] working = Arrays.copyOf(original, n);
-        if (window != null)
-        {
-            working = window.applyWindow(working);
-        }
+        
         Complex[] channels = bitReverseCopy(working);
         // use butterfly operations on working to find the DFT of original
         for (int m = 2; m <= n; m *= 2)

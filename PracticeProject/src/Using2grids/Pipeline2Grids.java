@@ -6,9 +6,8 @@ import java.text.DecimalFormat;
 
 public class Pipeline2Grids
 {
-	public static void main(String[] args)
+	private void tenIterations()
 	{
-
 		long time = System.nanoTime();
 
 		for (int i = 0; i < 10; i++)
@@ -19,30 +18,37 @@ public class Pipeline2Grids
 		}
 
 		System.out.println(System.nanoTime() - time);
+	}
 
-//		double[][] real = grid[0];
+	public static void main(String[] args)
+	{
+		double[][][] grid = Gridder2Grids.grid();
 
-		// DecimalFormat df = new DecimalFormat("0.000000");
-		//
-		// try
-		// {
-		// PrintWriter pw = new PrintWriter("test2.txt");
-		//
-		// for (int i = 0; i < real.length; i++)
-		// {
-		// pw.print(df.format(real[i][0]));
-		// for (int j = 1; j < real.length; j++)
-		// {
-		// pw.print("," + df.format(real[i][j]));
-		// }
-		// pw.print("\n");
-		// }
-		// pw.close();
-		// } catch (FileNotFoundException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		double[][][] transformedGrid = iFFT2Grids.twoDimensionifft(grid[0], grid[1]);
+
+		double[][] real = grid[0];
+
+		DecimalFormat df = new DecimalFormat("0.000000");
+
+		try
+		{
+			PrintWriter pw = new PrintWriter("test2.csv");
+
+			for (int i = 0; i < real.length; i++)
+			{
+				pw.print(df.format(real[i][0]));
+				for (int j = 1; j < real.length; j++)
+				{
+					pw.print("," + df.format(real[i][j]));
+				}
+				pw.print("\n");
+			}
+			pw.close();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

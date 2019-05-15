@@ -2,11 +2,12 @@ package UsingComplex;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 public class PipelineUsingComplex
 {
-	public static void main(String[] args)
+	private void tenIterations()
 	{
 		long time = System.nanoTime();
 
@@ -16,30 +17,39 @@ public class PipelineUsingComplex
 
 			Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
 		}
-		
-		System.out.println(System.nanoTime()-time);
 
-		// DecimalFormat df = new DecimalFormat("0.000000");
-		//
-		// try
-		// {
-		// PrintWriter pw = new PrintWriter("test3.txt");
-		//
-		// for (int i = 0; i < transformedGrid.length; i++)
-		// {
-		// pw.print(df.format(transformedGrid[i][0].getReal()));
-		// for (int j = 1; j < transformedGrid.length; j++)
-		// {
-		// pw.print("," + df.format(transformedGrid[i][j].getReal()));
-		// }
-		// pw.print("\n");
-		// }
-		// pw.close();
-		// } catch (FileNotFoundException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		System.out.println(System.nanoTime() - time);
+	}
+
+	public static void main(String[] args)
+	{
+		Complex[][] grid = GridderUsingComplex.grid();
+
+		 Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
+
+		DecimalFormat df = new DecimalFormat("0.000000");
+
+		Complex[][] perfectGrid = iFFTUsingComplex.twoDimensionifft(ReadPerfect.loadVisibilities());
+
+		try
+		{
+			PrintWriter pw = new PrintWriter("test4.csv");
+
+			for (int i = 0; i < grid.length; i++)
+			{
+				pw.print(df.format(transformedGrid[i][0].getReal()));
+				for (int j = 1; j < grid.length; j++)
+				{
+					pw.print("," + df.format(transformedGrid[i][j].getReal()));
+				}
+				pw.print("\n");
+			}
+			pw.close();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

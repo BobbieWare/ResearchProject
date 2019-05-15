@@ -78,7 +78,7 @@ public class GridderUsingComplex
 		double[] gridPoint = new double[2];
 
 		// From data
-		double cellSize = 0.00000484813681109536;
+		double cellSize = Double.parseDouble("4.848136811095360e-06");
 		double UVScale = gridSize * cellSize;
 
 		double wavelengthsToMeters = 300000000.0 / 299792458.0; // frequencyHZ / speed of light
@@ -98,7 +98,7 @@ public class GridderUsingComplex
 	{
 		// This represents the grid where we will be placing the visibilities
 		Complex[][] grid = new Complex[gridSize][gridSize];
-		
+
 		for (int row = 0; row < grid.length; row++)
 		{
 			for (int column = 0; column < grid.length; column++)
@@ -120,7 +120,6 @@ public class GridderUsingComplex
 
 		// Visibilities
 		LinkedList<double[]> visibilities = loadVisibilities();
-
 		for (double[] visibility : visibilities)
 		{
 			double[] trueGridPoint = UVtoGrid(visibility[0], visibility[1]);
@@ -139,14 +138,14 @@ public class GridderUsingComplex
 					int kernelX = inKernel(deltaX);
 					double deltaY = (nearestGridPoint[1] + j) - trueGridPoint[1];
 					int kernelY = inKernel(deltaY);
-					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)];
-					
+					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)] * 0.1;
+
 					Complex newValue = new Complex(visibility[2] * kernelValue, visibility[3] * kernelValue);
-					grid[nearestGridPoint[0] + i][nearestGridPoint[1] + j].addInPlace(newValue); 
+					grid[nearestGridPoint[0] + i][nearestGridPoint[1] + j].addInPlace(newValue);
 				}
 			}
 		}
-		
+
 		return grid;
 	}
 }

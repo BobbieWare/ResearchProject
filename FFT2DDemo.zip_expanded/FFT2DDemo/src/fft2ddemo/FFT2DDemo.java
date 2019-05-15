@@ -9,6 +9,10 @@ import fft2d.RadixTwo2DVectorRadix;
 import static fft2d.RadixTwo2DVectorRadix.output2DArray;
 import fftchannelizer.Complex;
 import fftchannelizer.ComplexDouble;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 /**
@@ -23,27 +27,34 @@ public class FFT2DDemo {
     public static void main(String[] args)
     {
         System.out.println("Starting FFT2DDemo");
-        int numChannels = 64;
+        int numChannels = 1024;
         RadixTwo2DRowColumn fftRC = new RadixTwo2DRowColumn(numChannels);
         RadixTwo2DVectorRadix fftVR = new RadixTwo2DVectorRadix(numChannels);
-        Complex[][] original = new Complex[numChannels][numChannels];
-        Random generator = new Random();
-        for (int row=0; row<numChannels; row++)
-        {
-            for (int col=0; col<numChannels; col++)
-            {
-                original[row][col] = new ComplexDouble(generator.nextFloat(), generator.nextFloat());
-//                        Math.cos(Math.PI*4*col/numChannels), Math.sin(Math.PI*4*col/numChannels));
-            }
-        }
+        Complex[][] original = GridderUsingComplex.grid();
         Complex[][] rcTransformed = fftRC.transform(original);
         Complex[][] vrTransformed = fftVR.transform(original);
-        output2DArray(original);
-        System.out.println();
-        output2DArray(rcTransformed);
-        System.out.println();
-        output2DArray(vrTransformed);
-        System.out.println();
+        
+        DecimalFormat df = new DecimalFormat("0.000000");
+        try
+		{
+			PrintWriter pw = new PrintWriter("test3.csv");
+
+			for (int i = 0; i < rcTransformed.length; i++)
+			{
+				pw.print(df.format(rcTransformed[i][0].getReal()));
+				for (int j = 1; j < rcTransformed.length; j++)
+				{
+					pw.print("," + df.format(rcTransformed[i][j].getReal()));
+				}
+				pw.print("\n");
+			}
+			pw.close();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         // calculate differences
         Complex[][] differences = new Complex[numChannels][numChannels];
         double sumDiff = 0;
