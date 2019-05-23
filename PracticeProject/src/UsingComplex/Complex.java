@@ -66,4 +66,9 @@ public class Complex
     	double newImag = -this.imag;
     	return new Complex(newReal, newImag);
     }
+    
+    public Complex abs()
+    {
+    	return new Complex(Math.abs(this.real), Math.abs(this.imag));
+    }
 }

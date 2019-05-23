@@ -16,6 +16,10 @@ public class Gridder2GridsMultiThreaded
 	private final static int gridSize = 1024;
 	private final static int heightOfSupport = 7;
 	private final static int widthOfSupport = 7;
+	private static int visibilitiesCount;
+
+	double[][][] realGrid;
+	double[][][] imaginaryGrid;
 
 	// Kernel from data
 	private final static double[] prolateSpheroidal = { 0.013051, 0.0308, 0.061057, 0.107442, 0.172657, 0.257676,
@@ -28,9 +32,6 @@ public class Gridder2GridsMultiThreaded
 	{
 		// Where the data will be stored
 		ArrayList<double[]> visibilities = new ArrayList<double[]>();
-
-		// Amount of visibilities.
-		int visibilitiesCount;
 
 		// File name
 		String csvFile = "Visibilities1.csv";
@@ -98,8 +99,8 @@ public class Gridder2GridsMultiThreaded
 	public static double[][][] grid()
 	{
 		// This represents the grid where we will be placing the visibilities
-		double[][] realGrid = new double[gridSize][gridSize];
-		double[][] imaginaryGrid = new double[gridSize][gridSize];
+		double[][][] realGrid = new double[4][gridSize][gridSize];
+		double[][][] imaginaryGrid = new double[4][gridSize][gridSize];
 
 		double[][] gridProlateSpheroidal = new double[14][14];
 
@@ -115,31 +116,63 @@ public class Gridder2GridsMultiThreaded
 		// Visibilities
 		ArrayList<double[]> visibilities = loadVisibilities();
 
-		for (double[] visibility : visibilities)
+		Thread[] threads = new Thread[4];
+		GriddingThread[] griddingThreads = new GriddingThread[4];
+
+		int quarterOfCount = visibilitiesCount / 4;
+
+		for (int i = 0; i < threads.length; i++)
 		{
-			double[] trueGridPoint = UVtoGrid(visibility[0], visibility[1]);
-			int[] nearestGridPoint = { (int) trueGridPoint[0], (int) trueGridPoint[1] };
+			int start = quarterOfCount * i;
+			int end = quarterOfCount * (i + 1);
 
-			int xMin = -(heightOfSupport - 1) / 2;
-			int xMax = (heightOfSupport - 1) / 2;
-			int yMin = -(widthOfSupport - 1) / 2;
-			int yMax = (widthOfSupport - 1) / 2;
+			griddingThreads[i] = new GriddingThread(start, end, visibilities, gridProlateSpheroidal);
+			threads[i] = new Thread(griddingThreads[i]);
+			threads[i].start();
+		}
 
-			for (int i = xMin; i <= xMax; i++)
+		for (int i = 0; i < threads.length; i++)
+		{
+			try
 			{
-				for (int j = yMin; j <= yMax; j++)
-				{
-					double deltaX = (nearestGridPoint[0] + i) - trueGridPoint[0];
-					int kernelX = inKernel(deltaX);
-					double deltaY = (nearestGridPoint[1] + j) - trueGridPoint[1];
-					int kernelY = inKernel(deltaY);
-					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)];
-					realGrid[nearestGridPoint[0] + i][nearestGridPoint[1] + j] += visibility[2] * kernelValue;
-					imaginaryGrid[nearestGridPoint[0] + i][nearestGridPoint[1] + j] += visibility[3] * kernelValue;
-				}
+				threads[i].join();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		
-		return new double[][][] {realGrid, imaginaryGrid};
+
+		for (int i = 0; i < griddingThreads.length; i++)
+		{
+			realGrid[i] = griddingThreads[i].realGrid;
+			imaginaryGrid[i] = griddingThreads[i].imaginaryGrid;
+		}
+
+		for (int row = 0; row < gridSize; row++)
+		{
+			for (int column = 0; column < griddingThreads.length; column++)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					realGrid[0][row][column] += realGrid[i][row][column];
+					imaginaryGrid[0][row][column] += imaginaryGrid[i][row][column];
+				}
+
+			}
+		}
+
+		return new double[][][]{realGrid[0], imaginaryGrid[0]};
 	}
+
+	public void setRealGrid(double[][] realGrid, int i)
+	{
+		this.realGrid[i] = realGrid;
+	}
+
+	public void setImaginaryGrid(double[][] imaginaryGrid, int i)
+	{
+		this.imaginaryGrid[i] = imaginaryGrid;
+	}
+
 }

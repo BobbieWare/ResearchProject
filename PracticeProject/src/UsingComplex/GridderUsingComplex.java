@@ -138,7 +138,7 @@ public class GridderUsingComplex
 					int kernelX = inKernel(deltaX);
 					double deltaY = (nearestGridPoint[1] + j) - trueGridPoint[1];
 					int kernelY = inKernel(deltaY);
-					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)] * 0.1;
+					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)];
 
 					Complex newValue = new Complex(visibility[2] * kernelValue, visibility[3] * kernelValue);
 					grid[nearestGridPoint[0] + i][nearestGridPoint[1] + j].addInPlace(newValue);

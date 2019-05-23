@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 
 public class Pipeline2Grids
 {
-	private void tenIterations()
+	private static void tenIterations()
 	{
 		long time = System.nanoTime();
 
@@ -21,18 +21,20 @@ public class Pipeline2Grids
 	}
 
 	public static void main(String[] args)
-	{
+	{		
+		tenIterations();
+		
 		double[][][] grid = Gridder2Grids.grid();
 
 		double[][][] transformedGrid = iFFT2Grids.twoDimensionifft(grid[0], grid[1]);
 
-		double[][] real = grid[0];
+		double[][] real = transformedGrid[0];
 
 		DecimalFormat df = new DecimalFormat("0.000000");
 
 		try
 		{
-			PrintWriter pw = new PrintWriter("test2.csv");
+			PrintWriter pw = new PrintWriter("test3.csv");
 
 			for (int i = 0; i < real.length; i++)
 			{

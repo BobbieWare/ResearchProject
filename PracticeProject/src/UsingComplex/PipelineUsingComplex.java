@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 
 public class PipelineUsingComplex
 {
-	private void tenIterations()
+	private static void tenIterations()
 	{
 		long time = System.nanoTime();
 
@@ -23,17 +23,17 @@ public class PipelineUsingComplex
 
 	public static void main(String[] args)
 	{
+		tenIterations();
+		
 		Complex[][] grid = GridderUsingComplex.grid();
 
-		 Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
+		Complex[][] transformedGrid = testIFFT.twoDimensionifft(grid);
 
 		DecimalFormat df = new DecimalFormat("0.000000");
 
-		Complex[][] perfectGrid = iFFTUsingComplex.twoDimensionifft(ReadPerfect.loadVisibilities());
-
 		try
 		{
-			PrintWriter pw = new PrintWriter("test4.csv");
+			PrintWriter pw = new PrintWriter("test3.csv");
 
 			for (int i = 0; i < grid.length; i++)
 			{

@@ -1,6 +1,5 @@
 package MultiThreaded;
 
-
 public class iFFT2GridsMultiThreaded
 {
 	public static double[][][] twoDimensionifft(double[][] inputReal, double[][] inputImag)
@@ -10,108 +9,77 @@ public class iFFT2GridsMultiThreaded
 		double[][] transformedReal = new double[n][n];
 		double[][] transformedImag = new double[n][n];
 
-		// transforming along each row
-		for (int row = 0; row < n; row++)
+		Thread[] threads = new Thread[4];
+		iFFTThreadRow[] griddingThreads = new iFFTThreadRow[4];
+
+		int quarterOfCount = 1024 / 4;
+
+		for (int i = 0; i < threads.length; i++)
 		{
-			double[][] transformed = ifft(inputReal[row], inputImag[row]);
-			transformedReal[row] = transformed[0];
-			transformedImag[row] = transformed[1];
+			int start = quarterOfCount * i;
+			int end = quarterOfCount * (i + 1);
+
+			griddingThreads[i] = new iFFTThreadRow(start, end, inputReal, inputImag);
+			threads[i] = new Thread(griddingThreads[i]);
+			threads[i].start();
 		}
 
-		// transforming down each column
-		for (int column = 0; column < n; column++)
+		for (int i = 0; i < threads.length; i++)
 		{
-			// create temporary array for the column
-			double[] realColumn = new double[n];
-			double[] imagColumn = new double[n];
-			
-			for (int row = 0; row < n; row++)
+			try
 			{
-				realColumn[row] = transformedReal[row][column];
-				imagColumn[row] = transformedImag[row][column];
+				threads[i].join();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-			double[][] transformed = ifft(realColumn, imagColumn);
-			realColumn = transformed[0];
-			imagColumn = transformed[1];
-			
-			for (int row = 0; row < n; row++)
+		}
+
+		for (int i = 0; i < griddingThreads.length; i++)
+		{
+			for (int j = (quarterOfCount * i); j < quarterOfCount * (i + 1); j++)
 			{
-				transformedReal[row][column] = realColumn[row];
-				transformedImag[row][column] = imagColumn[row];
+				transformedReal[j] = griddingThreads[i].transformedReal[i];
+				transformedImag[j] = griddingThreads[i].transformedImag[i];
 			}
 		}
 		
-		return new double[][][] {transformedReal, transformedImag};
-	}
+		Thread[] threads2 = new Thread[4];
+		iFFTThreadColumn[] griddingThreads2 = new iFFTThreadColumn[4];
 
-	/**
-	 * The Fast Fourier Transform
-	 *
-	 * @param inputReal
-	 *            an array of length n, the real part
-	 * @param inputImag
-	 *            an array of length n, the imaginary part
-	 * @return a new array of length 2n
-	 */
-	public static double[][] ifft(double[] inputReal, double[] inputImag)
-	{
-		int n = inputReal.length;
-
-		double[] reversedReal = bitReverse(inputReal);
-		double[] reversedImag = bitReverse(inputImag);
-
-		for (int m = 2; m <= n; m *= 2)
+		for (int i = 0; i < threads2.length; i++)
 		{
-			double omegaReal = Math.cos((-2 * Math.PI) / m);
-			double omegaImag = -Math.sin((-2 * Math.PI) / m);
+			int start = quarterOfCount * i;
+			int end = quarterOfCount * (i + 1);
 
-			for (int k = 0; k < n; k += m)
+			griddingThreads2[i] = new iFFTThreadColumn(start, end, inputReal, inputImag);
+			threads2[i] = new Thread(griddingThreads2[i]);
+			threads2[i].start();
+		}
+
+		for (int i = 0; i < threads2.length; i++)
+		{
+			try
 			{
-				double xReal = 1;
-				double xImag = 0;
-
-				for (int j = 0; j < m / 2; j++)
-				{
-					double tReal = (xReal * reversedReal[k + j + m / 2]) - (xImag * reversedImag[k + j + m / 2]);
-					double tImag = (xReal * reversedImag[k + j + m / 2]) + (xImag * reversedReal[k + j + m / 2]);
-
-					double uReal = reversedReal[k + j];
-					double uImag = reversedImag[k + j];
-
-					reversedReal[k + j] = uReal + tReal;
-					reversedImag[k + j] = uImag + tImag;
-
-					reversedReal[k + j + m / 2] = uReal - tReal;
-					reversedImag[k + j + m / 2] = uImag - tImag;
-					
-					double newXR = (xReal * omegaReal) - (xImag * omegaImag);
-					double newXI = (xReal * omegaImag) + (xImag * omegaReal);
-					
-					xReal = newXR;
-					xImag = newXI;
-				}
+				threads2[i].join();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		return new double[][]{ reversedReal, reversedImag };
+
+		for (int i = 0; i < griddingThreads2.length; i++)
+		{
+			for (int j = (quarterOfCount * i); j < quarterOfCount * (i + 1); j++)
+			{
+				transformedReal[j] = griddingThreads2[i].transformedReal[i];
+				transformedImag[j] = griddingThreads2[i].transformedImag[i];
+			}
+		}
+		
+		return new double[][][]{ transformedReal, transformedImag};
 	}
 
-	private static double[] bitReverse(double[] array)
-	{
-		double[] reversed = new double[array.length];
-		for (int k = 0; k < array.length; k++)
-		{
-			// calculate postion of k in new array
-			int kNew = k;
-			int r = 0;
-			for (int j = 1; j < array.length; j *= 2)
-			{
-				int b = kNew & 1;
-				r = (r << 1) + b;
-				kNew = (kNew >>> 1);
-			}
-			reversed[r] = array[k];
-		}
-		return reversed;
-	}
 }
