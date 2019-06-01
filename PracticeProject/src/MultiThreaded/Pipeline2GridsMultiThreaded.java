@@ -24,12 +24,10 @@ public class Pipeline2GridsMultiThreaded
 	}
 
 	public static void main(String[] args)
-	{
-		tenIterations();
-		
-		double[][][] grid = Gridder2Grids.grid();
+	{		
+		double[][][] grid = Gridder2GridsMultiThreaded.grid();
 
-		double[][][] transformedGrid = iFFT2Grids.twoDimensionifft(grid[0], grid[1]);
+		double[][][] transformedGrid = iFFT2GridsMultiThreaded.twoDimensionifft(grid[0], grid[1]);
 
 		double[][] real = transformedGrid[0];
 
@@ -37,7 +35,7 @@ public class Pipeline2GridsMultiThreaded
 
 		try
 		{
-			PrintWriter pw = new PrintWriter("test2.csv");
+			PrintWriter pw = new PrintWriter("test3.csv");
 
 			for (int i = 0; i < real.length; i++)
 			{

@@ -30,7 +30,7 @@ public class iFFTThreadRow implements Runnable
 		for (int m = 2; m <= n; m *= 2)
 		{
 			double omegaReal = Math.cos((-2 * Math.PI) / m);
-			double omegaImag = -Math.sin((-2 * Math.PI) / m);
+			double omegaImag = Math.sin((-2 * Math.PI) / m);
 
 			for (int k = 0; k < n; k += m)
 			{

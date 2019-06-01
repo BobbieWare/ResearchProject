@@ -34,7 +34,7 @@ public class Gridder2GridsMultiThreaded
 		ArrayList<double[]> visibilities = new ArrayList<double[]>();
 
 		// File name
-		String csvFile = "Visibilities1.csv";
+		String csvFile = "Visibilities.csv";
 		String line = "";
 		String cvsSpilt = ",";
 

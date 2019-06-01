@@ -27,7 +27,7 @@ public class PipelineUsingComplex
 		
 		Complex[][] grid = GridderUsingComplex.grid();
 
-		Complex[][] transformedGrid = testIFFT.twoDimensionifft(grid);
+		Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
 
 		DecimalFormat df = new DecimalFormat("0.000000");
 
@@ -47,7 +47,6 @@ public class PipelineUsingComplex
 			pw.close();
 		} catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

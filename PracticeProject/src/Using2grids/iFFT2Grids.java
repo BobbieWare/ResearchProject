@@ -6,6 +6,8 @@ public class iFFT2Grids
 	public static double[][][] twoDimensionifft(double[][] inputReal, double[][] inputImag)
 	{
 		int n = inputReal.length;
+		
+		double[][][] shiftedGrid = shift(inputReal, inputImag);
 
 		double[][] transformedReal = new double[n][n];
 		double[][] transformedImag = new double[n][n];
@@ -13,7 +15,7 @@ public class iFFT2Grids
 		// transforming along each row
 		for (int row = 0; row < n; row++)
 		{
-			double[][] transformed = ifft(inputReal[row], inputImag[row]);
+			double[][] transformed = ifft(shiftedGrid[0][row], shiftedGrid[1][row]);
 			transformedReal[row] = transformed[0];
 			transformedImag[row] = transformed[1];
 		}
@@ -42,7 +44,7 @@ public class iFFT2Grids
 			}
 		}
 		
-		return new double[][][] {transformedReal, transformedImag};
+		return shift(transformedReal, transformedImag);
 	}
 
 	/**
@@ -113,5 +115,75 @@ public class iFFT2Grids
 			reversed[r] = array[k];
 		}
 		return reversed;
+	}
+	
+	private static double[][][] shift(double[][][] grid)
+	{
+		double[][] realShifted = new double[1024][1024];
+		double[][] imagShifted = new double[1024][1024];
+		
+		for (int row = 0; row < realShifted.length; row++)
+		{
+			for (int column = 0; column < realShifted.length; column++)
+			{
+				int xDiff, yDiff;
+
+				if (row < 512)
+				{
+					xDiff = 512;
+				}
+				else
+				{
+					xDiff = -512;
+				}
+				if (column < 512)
+				{
+					yDiff = 512;
+				}
+				else
+				{
+					yDiff = -512;
+				}
+
+				realShifted[row][column] = grid[0][row + xDiff][column + yDiff];
+				imagShifted[row][column] = grid[1][row + xDiff][column + yDiff];
+			}
+		}
+		return new double[][][]{ realShifted, imagShifted};
+	}
+	
+	public static double[][][] shift(double[][] inputReal, double[][] inputImag)
+	{
+		double[][] realShifted = new double[1024][1024];
+		double[][] imagShifted = new double[1024][1024];
+
+		for (int row = 0; row < realShifted.length; row++)
+		{
+			for (int column = 0; column < realShifted.length; column++)
+			{
+				int xDiff, yDiff;
+
+				if (row < 512)
+				{
+					xDiff = 512;
+				}
+				else
+				{
+					xDiff = -512;
+				}
+				if (column < 512)
+				{
+					yDiff = 512;
+				}
+				else
+				{
+					yDiff = -512;
+				}
+
+				realShifted[row][column] = inputReal[row + xDiff][column + yDiff];
+				imagShifted[row][column] = inputImag[row + xDiff][column + yDiff];
+			}
+		}
+		return new double[][][]{ realShifted, imagShifted };
 	}
 }
