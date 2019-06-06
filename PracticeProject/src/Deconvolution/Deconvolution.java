@@ -21,12 +21,11 @@ public class Deconvolution
 		for (int i = 0; i < iterations; i++)
 		{
 			brightestPixel = findBrightest(grid);
-			double strength = grid[brightestPixel[0]][brightestPixel[1]].getReal();
 			
-			int xMin = -7;
-			int xMax = 7;
-			int yMin = -7;
-			int yMax = 7;
+			int xMin = -2;
+			int xMax = 2;
+			int yMin = -2;
+			int yMax = 2;
 
 			for (int row = xMin; row <= xMax; row++)
 			{
@@ -35,8 +34,8 @@ public class Deconvolution
 					int xCoordinate = (brightestPixel[0] + row);
 					int yCoordinate = (brightestPixel[1] + column);
 					
-					double factor = 0.01;
-					double ammount = beam[7 + row][7 + column].getReal() * factor * strength;
+					double factor = 10000;
+					double ammount = beam[2 + row][2 + column].getReal() * factor;
 					
 					Complex newValue = new Complex(ammount, 0);
 					cleaned[xCoordinate][yCoordinate].addInPlace(newValue);

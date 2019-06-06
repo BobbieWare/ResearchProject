@@ -21,7 +21,7 @@ public class iFFT2GridsMultiThreaded
 			int start = quarterOfCount * i;
 			int end = quarterOfCount * (i + 1);
 
-			griddingThreads[i] = new iFFTThreadRow(start, end, shiftedGrid[0], shiftedGrid[1]);
+			griddingThreads[i] = new iFFTThreadRow(start, end, inputReal, inputImag);
 			threads[i] = new Thread(griddingThreads[i]);
 			threads[i].start();
 		}

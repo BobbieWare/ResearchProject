@@ -20,10 +20,10 @@ public class DirtyBeamConstructor
 		{
 			PrintWriter pw = new PrintWriter("DirtyBeam.csv");
 
-			for (int i = 505; i < 520; i++)
+			for (int i = 510; i < 515; i++)
 			{
-				pw.print(df.format(transformedGrid[i][0].getReal()));
-				for (int j = 506; j < 520; j++)
+				pw.print(df.format(transformedGrid[i][510].getReal()));
+				for (int j = 511; j < 515; j++)
 				{
 					pw.print("," + df.format(transformedGrid[i][j].getReal()));
 				}

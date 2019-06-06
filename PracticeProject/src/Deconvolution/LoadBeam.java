@@ -10,7 +10,7 @@ public class LoadBeam
 	public static Complex[][] loadBeam()
 	{
 		
-		Complex[][] grid = new Complex[15][15];
+		Complex[][] grid = new Complex[5][5];
 
 		for (int row = 0; row < grid.length; row++)
 		{
@@ -36,7 +36,7 @@ public class LoadBeam
 				// Splits the line up by each comma
 				String[] complexNumberAsString = line.split(cvsSpilt);
 				
-				for (int i = 0; i < 15; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					if (Double.parseDouble(complexNumberAsString[i]) > 0)
 					{

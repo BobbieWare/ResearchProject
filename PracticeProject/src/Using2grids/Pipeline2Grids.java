@@ -7,17 +7,16 @@ import java.text.DecimalFormat;
 public class Pipeline2Grids
 {
 	private static void tenIterations()
-	{
+	{		
 		long time = System.nanoTime();
 
 		for (int i = 0; i < 10; i++)
 		{
 			double[][][] grid = Gridder2Grids.grid();
 
-			double[][][] transformedGrid = iFFT2Grids.twoDimensionifft(grid[0], grid[1]);
+			//double[][][] transformedGrid = iFFT2Grids.twoDimensionifft(grid[0], grid[1]);
 		}
-
-		System.out.println(System.nanoTime() - time);
+			System.out.println(System.nanoTime() - time);
 	}
 
 	public static void main(String[] args)

@@ -8,16 +8,16 @@ import java.text.DecimalFormat;
 public class PipelineUsingComplex
 {
 	private static void tenIterations()
-	{
+	{		
 		long time = System.nanoTime();
 
 		for (int i = 0; i < 10; i++)
 		{
 			Complex[][] grid = GridderUsingComplex.grid();
 
-			Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
+			//Complex[][] transformedGrid = iFFTUsingComplex.twoDimensionifft(grid);
+			
 		}
-
 		System.out.println(System.nanoTime() - time);
 	}
 

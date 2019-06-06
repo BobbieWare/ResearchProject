@@ -1,17 +1,18 @@
 package UsingComplex;
 
+
 public class iFFTUsingComplex
 {
-	public static Complex[][] twoDimensionifft(Complex[][] input)
+	public static Complex[][] twoDimensionifft(Complex[][] grid)
 	{
-		int n = input.length;
-		
-		Complex [][] transformed = new Complex[n][n];
+		int n = grid.length;
+
+		Complex[][] transformed = shift(grid);
 
 		// transforming along each row
 		for (int row = 0; row < n; row++)
 		{
-			transformed[row] = ifft(input[row]); 
+			transformed[row] = ifft(transformed[row]);
 		}
 
 		// transforming down each column
@@ -34,7 +35,7 @@ public class iFFTUsingComplex
 			}
 		}
 
-		return transformed;
+		return shift(transformed);
 	}
 
 	/**
@@ -49,29 +50,29 @@ public class iFFTUsingComplex
 	public static Complex[] ifft(Complex[] input)
 	{
 		int n = input.length;
-		
+
 		Complex[] reversedArray = bitReverse(input);
 
 		for (int m = 2; m <= n; m *= 2)
 		{
-			Complex omega = new Complex(Math.cos((2 * Math.PI) / m), Math.sin((2 * Math.PI) / m));
+			Complex omega = new Complex(Math.cos((-2 * Math.PI) / m), Math.sin((-2 * Math.PI) / m));
 
 			for (int k = 0; k < n; k += m)
 			{
-				
+
 				Complex x = new Complex(1, 0);
 
 				for (int j = 0; j < m / 2; j++)
 				{
-					
+
 					Complex t = x.multiply(reversedArray[k + j + m / 2]);
-					
+
 					Complex u = reversedArray[k + j];
-					
+
 					reversedArray[k + j] = u.add(t);
-					
+
 					reversedArray[k + j + m / 2] = u.subtract(t);
-					
+
 					x.multiplyInPlace(omega);
 				}
 			}
@@ -96,5 +97,38 @@ public class iFFTUsingComplex
 			reversed[r] = array[k];
 		}
 		return reversed;
+	}
+	
+	public static Complex[][] shift(Complex[][] grid)
+	{
+		Complex[][] shiftedGrid = new Complex[1024][1024];
+
+		for (int row = 0; row < shiftedGrid.length; row++)
+		{
+			for (int column = 0; column < shiftedGrid.length; column++)
+			{
+				int xDiff, yDiff;
+
+				if (row < 512)
+				{
+					xDiff = 512;
+				}
+				else
+				{
+					xDiff = -512;
+				}
+				if (column < 512)
+				{
+					yDiff = 512;
+				}
+				else
+				{
+					yDiff = -512;
+				}
+
+				shiftedGrid[row][column] = grid[row + xDiff][column + yDiff];
+			}
+		}
+		return shiftedGrid;
 	}
 }

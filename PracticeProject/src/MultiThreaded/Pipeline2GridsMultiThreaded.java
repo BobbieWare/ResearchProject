@@ -10,21 +10,23 @@ import Using2grids.iFFT2Grids;
 public class Pipeline2GridsMultiThreaded
 {
 	private static void tenIterations()
-	{
+	{		
 		long time = System.nanoTime();
 
 		for (int i = 0; i < 10; i++)
 		{
 			double[][][] grid = Gridder2GridsMultiThreaded.grid();
 
-			double[][][] transformedGrid = iFFT2GridsMultiThreaded.twoDimensionifft(grid[0], grid[1]);
+			//double[][][] transformedGrid = iFFT2GridsMultiThreaded.twoDimensionifft(grid[0], grid[1]);
+			
 		}
-
-		System.out.println(System.nanoTime() - time);
+			System.out.println(System.nanoTime() - time);
 	}
 
 	public static void main(String[] args)
 	{		
+		tenIterations();
+		
 		double[][][] grid = Gridder2GridsMultiThreaded.grid();
 
 		double[][][] transformedGrid = iFFT2GridsMultiThreaded.twoDimensionifft(grid[0], grid[1]);
