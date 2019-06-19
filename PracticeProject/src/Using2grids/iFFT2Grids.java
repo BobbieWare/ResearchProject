@@ -117,41 +117,6 @@ public class iFFT2Grids
 		return reversed;
 	}
 	
-	private static double[][][] shift(double[][][] grid)
-	{
-		double[][] realShifted = new double[1024][1024];
-		double[][] imagShifted = new double[1024][1024];
-		
-		for (int row = 0; row < realShifted.length; row++)
-		{
-			for (int column = 0; column < realShifted.length; column++)
-			{
-				int xDiff, yDiff;
-
-				if (row < 512)
-				{
-					xDiff = 512;
-				}
-				else
-				{
-					xDiff = -512;
-				}
-				if (column < 512)
-				{
-					yDiff = 512;
-				}
-				else
-				{
-					yDiff = -512;
-				}
-
-				realShifted[row][column] = grid[0][row + xDiff][column + yDiff];
-				imagShifted[row][column] = grid[1][row + xDiff][column + yDiff];
-			}
-		}
-		return new double[][][]{ realShifted, imagShifted};
-	}
-	
 	public static double[][][] shift(double[][] inputReal, double[][] inputImag)
 	{
 		double[][] realShifted = new double[1024][1024];
