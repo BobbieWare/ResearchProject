@@ -1,3 +1,11 @@
+/*
+ * This class is used to load the beam that will be used for
+ * the deconvolution.
+ * It can be configured by changing the csvFile variable to 
+ * the image that will be processed.
+ * 
+ * @author Bobbie Ware
+ */
 package Deconvolution;
 
 import java.io.BufferedReader;

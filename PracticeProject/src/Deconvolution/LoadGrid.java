@@ -1,3 +1,10 @@
+/*
+ * This class is used to load the grid that will be deconvoluted
+ * It can be configured by changing the csvFile variable to 
+ * the image that will be processed.
+ * 
+ * @author Bobbie Ware
+ */
 package Deconvolution;
 
 import java.io.BufferedReader;
@@ -21,8 +28,8 @@ public class LoadGrid
 		}
 
 		// File name
-		String csvFile = "perfect_image_real.csv";
-		String csvFile2 = "perfect_image_imaginary.csv";
+		String csvFile = "input-real.csv";
+		String csvFile2 = "input-imaginary.csv";
 		String line = "";
 		String line2 = "";
 		String cvsSpilt = ",";
@@ -48,6 +55,7 @@ public class LoadGrid
 				lineNum++;
 			}
 			bufferedReader.close();
+			bufferedReader2.close();
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();

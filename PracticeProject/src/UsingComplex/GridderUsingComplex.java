@@ -1,3 +1,9 @@
+/*
+ * This class is used to place visibility data onto a grid.
+ * The grid for this version is a 2D array of Complex objects.
+ * 
+ * @author Bobbie Ware
+ */
 package UsingComplex;
 
 import java.io.BufferedReader;
@@ -7,9 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
-/*
- * This class ------------------------------------------
- */
 public class GridderUsingComplex
 {
 	private final static int gridSize = 1024;
@@ -32,7 +35,7 @@ public class GridderUsingComplex
 		int visibilitiesCount;
 
 		// File name
-		String csvFile = "Visibilities.csv";
+		String csvFile = "FILE_TO_LOAD.csv";
 		String line = "";
 		String cvsSpilt = ",";
 
@@ -41,7 +44,9 @@ public class GridderUsingComplex
 			// Creates buffered reader by loading file
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile));
 
+			// The first line will the count of visibilities
 			visibilitiesCount = Integer.parseInt(bufferedReader.readLine());
+			
 			// Reads in each line of the reader
 			while ((line = bufferedReader.readLine()) != null)
 			{
@@ -89,16 +94,23 @@ public class GridderUsingComplex
 		return gridPoint;
 	}
 
+	/*
+	 * Rounds d to find the correct value with the kernel to use
+	 */
 	private static int inKernel(double d)
 	{
 		return (int) ((d / 4) * 14);
 	}
 
+	/*
+	 * Function to carry out all the processes involved in forming the grid
+	 */
 	public static Complex[][] grid()
 	{
 		// This represents the grid where we will be placing the visibilities
 		Complex[][] grid = new Complex[gridSize][gridSize];
 
+		// Fills the grid with Complex object as we want to add
 		for (int row = 0; row < grid.length; row++)
 		{
 			for (int column = 0; column < grid.length; column++)
@@ -106,7 +118,8 @@ public class GridderUsingComplex
 				grid[row][column] = new Complex();
 			}
 		}
-
+		
+		// The following lines forms the 2d prolate spherodial.
 		double[][] gridProlateSpheroidal = new double[14][14];
 
 		for (int i = 0; i < gridProlateSpheroidal[0].length; i++)
@@ -120,27 +133,40 @@ public class GridderUsingComplex
 
 		// Visibilities
 		LinkedList<double[]> visibilities = loadVisibilities();
+		
+		// Each visibility is placed on the grid
 		for (double[] visibility : visibilities)
 		{
+			// The absolute point on the grid
 			double[] trueGridPoint = UVtoGrid(visibility[0], visibility[1]);
+			
+			// Rounds the true point to a grid point 
 			int[] nearestGridPoint = { (int) trueGridPoint[0], (int) trueGridPoint[1] };
 
+			// The area in which each point is spread
 			int xMin = -(heightOfSupport - 1) / 2;
 			int xMax = (heightOfSupport - 1) / 2;
 			int yMin = -(widthOfSupport - 1) / 2;
 			int yMax = (widthOfSupport - 1) / 2;
 
+			// For the 2D support area
 			for (int i = xMin; i <= xMax; i++)
 			{
 				for (int j = yMin; j <= yMax; j++)
 				{
+					// Finds the corresponding point in the kernel
 					double deltaX = (nearestGridPoint[0] + i) - trueGridPoint[0];
 					int kernelX = inKernel(deltaX);
 					double deltaY = (nearestGridPoint[1] + j) - trueGridPoint[1];
 					int kernelY = inKernel(deltaY);
+					
+					// Loads the support value
 					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)];
-
+					
+					// Stores the value to be add to the Complex grid
 					Complex newValue = new Complex(visibility[2] * kernelValue, visibility[3] * kernelValue);
+					
+					// In-place addition of the Complex number
 					grid[nearestGridPoint[0] + i][nearestGridPoint[1] + j].addInPlace(newValue);
 				}
 			}

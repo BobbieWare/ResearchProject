@@ -1,3 +1,10 @@
+/**
+ * This class is responsible applying a convolution correction to the output image
+ * It corrects the effects of the convolution applied by applied a kernel to correct
+ * its effects.
+ * 
+ * @author Bobbie Ware
+ */
 package UsingMultipleThreads;
 
 public class ConvolutionCorrection
@@ -19,22 +26,21 @@ public class ConvolutionCorrection
 			nuY = Math.abs((row - halfSize) / halfSize);
 			taperY = getSpheriodal(nuY);
 			m = Math.pow((row - halfSize) * cellSize, 2);
-			
+
 			for (int column = 0; column < grid.length; column++)
 			{
 				nuX = Math.abs((column - halfSize) / halfSize);
 				taperX = taperY * getSpheriodal(nuX);
 
-				if(Math.abs(taperX) > (1E-10))
+				if (Math.abs(taperX) > (1E-10))
 				{
 					l = Math.pow((column - halfSize) * cellSize, 2.0);
 					grid[row][column] /= taperX * Math.sqrt(1.0 - l - m);
 				}
-				else
-					grid[row][column] = 0.0;
+				else grid[row][column] = 0.0;
 			}
 		}
-		
+
 		return grid;
 	}
 

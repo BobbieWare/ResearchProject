@@ -1,21 +1,20 @@
+/*
+ * This class is used to place visibility data onto a grid.
+ * This version uses multi-threading to improve its performance
+ * 
+ * @author Bobbie Ware
+ */
 package UsingMultipleThreads;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-/*
- * This class ------------------------------------------
- */
-public class Gridder2GridsMultiThreaded
+public class GridderMultiThreaded
 {
 	private final static int gridSize = 1024;
-	private final static int heightOfSupport = 7;
-	private final static int widthOfSupport = 7;
 	private static int visibilitiesCount;
 
 	double[][][] realGrid;
@@ -42,8 +41,10 @@ public class Gridder2GridsMultiThreaded
 		{
 			// Creates buffered reader by loading file
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile));
-
+			
+			// The first line will the count of visibilities
 			visibilitiesCount = Integer.parseInt(bufferedReader.readLine());
+			
 			// Reads in each line of the reader
 			while ((line = bufferedReader.readLine()) != null)
 			{
@@ -73,35 +74,16 @@ public class Gridder2GridsMultiThreaded
 	}
 
 	/*
-	 * Take the u,v location and using the round function returns its grid location.
+	 * Function to carry out all the processes involved in forming the grid.
+	 * Uses 4 threads to each place a quarter of the visibilities.
 	 */
-	private static double[] UVtoGrid(double u, double v)
-	{
-		double[] gridPoint = new double[2];
-
-		// From data
-		double cellSize = 0.00000484813681109536;
-		double UVScale = gridSize * cellSize;
-
-		double wavelengthsToMeters = 300000000.0 / 299792458.0; // frequencyHZ / speed of light
-
-		gridPoint[0] = ((-u * wavelengthsToMeters) * UVScale) + gridSize / 2;
-		gridPoint[1] = ((v * wavelengthsToMeters) * UVScale) + gridSize / 2;
-
-		return gridPoint;
-	}
-
-	private static int inKernel(double d)
-	{
-		return (int) ((d / 4) * 14);
-	}
-
 	public static double[][][] grid()
 	{
 		// This represents the grid where we will be placing the visibilities
 		double[][][] realGrid = new double[4][gridSize][gridSize];
 		double[][][] imaginaryGrid = new double[4][gridSize][gridSize];
 
+		// The following lines forms the 2d prolate spherodial.
 		double[][] gridProlateSpheroidal = new double[14][14];
 
 		for (int i = 0; i < gridProlateSpheroidal[0].length; i++)
@@ -116,11 +98,14 @@ public class Gridder2GridsMultiThreaded
 		// Visibilities
 		ArrayList<double[]> visibilities = loadVisibilities();
 
+		// Creates the 4 threads using the GriddingThread class
 		Thread[] threads = new Thread[4];
 		GriddingThread[] griddingThreads = new GriddingThread[4];
 
 		int quarterOfCount = visibilitiesCount / 4;
 
+		// Instantiates the threads and gives them their start and end indexes, the visibility data and the
+		// Prolate Spheroidal for the kernel values.
 		for (int i = 0; i < threads.length; i++)
 		{
 			int start = quarterOfCount * i;
@@ -131,6 +116,7 @@ public class Gridder2GridsMultiThreaded
 			threads[i].start();
 		}
 
+		// Waits for each thread to have finished placing the visibilities
 		for (int i = 0; i < threads.length; i++)
 		{
 			try
@@ -138,11 +124,11 @@ public class Gridder2GridsMultiThreaded
 				threads[i].join();
 			} catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
+		// Combines the 4 grid from each thread into one grid
 		for (int i = 0; i < griddingThreads.length; i++)
 		{
 			realGrid[i] = griddingThreads[i].realGrid;
@@ -158,7 +144,6 @@ public class Gridder2GridsMultiThreaded
 					realGrid[0][row][column] += realGrid[i][row][column];
 					imaginaryGrid[0][row][column] += imaginaryGrid[i][row][column];
 				}
-
 			}
 		}
 

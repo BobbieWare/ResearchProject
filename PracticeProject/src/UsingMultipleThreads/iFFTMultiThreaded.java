@@ -1,21 +1,38 @@
+/*
+ * The Fourier Transform is used to show different parts of a continuous signal. 
+ * However, for Interferometry an Inverse Fourier Transform is used as we are taking 
+ * the data from the Fourier Plane and creating an image from it. 
+ * 
+ * This implementation is a radix 2 iFFT, it also uses two 2D double arrays and uses 
+ * multiple threads to carry out the transform.
+ * 
+ * @author Bobbie Ware
+ */
+
 package UsingMultipleThreads;
 
-public class iFFT2GridsMultiThreaded
+public class iFFTMultiThreaded
 {
+	/*
+	 * Carries out a 2D transform on a grid
+	 */
 	public static double[][][] twoDimensionifft(double[][] inputReal, double[][] inputImag)
 	{
 		int n = inputReal.length;
 
+		// The grid is shifted to correctly center the grid
 		double[][][] shiftedGrid = shift(inputReal, inputImag);
 
 		double[][] transformedReal = new double[n][n];
 		double[][] transformedImag = new double[n][n];
 
+		// Creates the 4 threads using the GriddingThread class
 		Thread[] threads = new Thread[4];
 		iFFTThreadRow[] griddingThreads = new iFFTThreadRow[4];
 
 		int quarterOfCount = 1024 / 4;
 
+		// Instantiates the threads and gives them their start and end indexes, the grids
 		for (int i = 0; i < threads.length; i++)
 		{
 			int start = quarterOfCount * i;
@@ -26,6 +43,7 @@ public class iFFT2GridsMultiThreaded
 			threads[i].start();
 		}
 
+		// Waits for each thread to have finished transforming the grid
 		for (int i = 0; i < threads.length; i++)
 		{
 			try
@@ -33,11 +51,11 @@ public class iFFT2GridsMultiThreaded
 				threads[i].join();
 			} catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
+		// Combines the 4 parts from each thread into one grid
 		for (int i = 0; i < griddingThreads.length; i++)
 		{
 			for (int j = (quarterOfCount * i); j < quarterOfCount * (i + 1); j++)
@@ -47,6 +65,8 @@ public class iFFT2GridsMultiThreaded
 			}
 		}
 
+		// The same process is applied except using values from each column instead
+		// of rows.
 		Thread[] threads2 = new Thread[4];
 		iFFTThreadColumn[] griddingThreads2 = new iFFTThreadColumn[4];
 
@@ -84,11 +104,17 @@ public class iFFT2GridsMultiThreaded
 			}
 		}
 
+		// Output is shifted to re-center the grid
 		double[][][] shiftedGrids = shift(transformedReal, transformedImag);
 		
 		return shiftedGrids;
 	}
 
+	/*
+	 * Carries out a shift on the grid rearrange the order of the points.
+	 * It places the corners at the center of the image and move the other points around 
+	 * accordingly.
+	 */
 	public static double[][][] shift(double[][] inputReal, double[][] inputImag)
 	{
 		double[][] realShifted = new double[1024][1024];

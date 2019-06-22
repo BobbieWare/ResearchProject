@@ -1,3 +1,10 @@
+/*
+ * This class a Runnable thread for dealing with a given amount of visibilities and 
+ * place them onto a grid
+ * 
+ * @author Bobbie Ware
+ */
+
 package UsingMultipleThreads;
 
 import java.util.ArrayList;
@@ -10,7 +17,6 @@ public class GriddingThread implements Runnable
 	private int support = 7;
 	private int start;
 	private int end;
-	public int arrayToAccess;
 
 	private ArrayList<double[]> visibilities;
 	private double[][] gridProlateSpheroidal;
@@ -18,6 +24,9 @@ public class GriddingThread implements Runnable
 	public double[][] realGrid;
 	public double[][] imaginaryGrid;
 
+	/*
+	 * Sets the values for the given thread
+	 */
 	public GriddingThread(int start, int end, ArrayList<double[]> visibilities, double[][] gridProlateSpheroidal)
 	{
 		this.start = start;
@@ -28,31 +37,47 @@ public class GriddingThread implements Runnable
 		this.imaginaryGrid = new double[gridSize][gridSize];
 	}
 
+	/*
+	 * This function is ran when the thread is started. It carries out the normal gridding operations 
+	 * but on a sublist of all the visibilities.	 
+	 */
 	@Override
 	public void run()
 	{
-		// Visibilities
+		// Visibilities sublist from the total 
 		List<double[]> visibilitiesToGrid = visibilities.subList(start, end);
 
+		// Each visibility is placed on the grid
 		for (double[] visibility : visibilitiesToGrid)
 		{
+			// The absolute point on the grid
 			double[] trueGridPoint = UVtoGrid(visibility[0], visibility[1]);
+			
+			// Rounds the true point to a grid point 
 			int[] nearestGridPoint = { (int) trueGridPoint[0], (int) trueGridPoint[1] };
 
+			// The area in which each point is spread
 			int xMin = -(support - 1) / 2;
 			int xMax = (support - 1) / 2;
 			int yMin = -(support - 1) / 2;
 			int yMax = (support - 1) / 2;
 
+			// For the 2D support area
 			for (int i = xMin; i <= xMax; i++)
 			{
 				for (int j = yMin; j <= yMax; j++)
 				{
+					// Finds the corresponding point in the kernel
 					double deltaX = (nearestGridPoint[0] + i) - trueGridPoint[0];
 					int kernelX = inKernel(deltaX);
 					double deltaY = (nearestGridPoint[1] + j) - trueGridPoint[1];
 					int kernelY = inKernel(deltaY);
+					
+					// Loads the support value
 					double kernelValue = gridProlateSpheroidal[Math.abs(kernelX)][Math.abs(kernelY)];
+					
+					// Adds the value in the real grid, the value of the visibility is times by the kernel 
+					// value, the same goes for the imaginary part
 					realGrid[nearestGridPoint[0] + i][nearestGridPoint[1] + j] += visibility[2] * kernelValue;
 					imaginaryGrid[nearestGridPoint[0] + i][nearestGridPoint[1] + j] += visibility[3] * kernelValue;
 				}
@@ -79,6 +104,9 @@ public class GriddingThread implements Runnable
 		return gridPoint;
 	}
 
+	/*
+	 * Rounds d to find the correct value with the kernel to use
+	 */
 	private static int inKernel(double d)
 	{
 		return (int) ((d / 4) * 14);

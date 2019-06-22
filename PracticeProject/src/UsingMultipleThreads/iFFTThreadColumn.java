@@ -1,7 +1,11 @@
-package UsingMultipleThreads;
+/*
+ * This class a Runnable thread for dealing with a given amount of visibilities and 
+ * place them onto a grid
+ * 
+ * @author Bobbie Ware
+ */
 
-import java.util.ArrayList;
-import java.util.List;
+package UsingMultipleThreads;
 
 public class iFFTThreadColumn implements Runnable
 {
@@ -17,21 +21,17 @@ public class iFFTThreadColumn implements Runnable
 	private final static int n = 1024;
 	
 	/**
-	 * The Fast Fourier Transform
-	 *
-	 * @param inputReal
-	 *            an array of length n, the real part
-	 * @param inputImag
-	 *            an array of length n, the imaginary part
-	 * @return a new array of length 2n
+	 * The transform for an array of complex numbers
 	 */
 	public static double[][] ifft(double[] inputReal, double[] inputImag)
 	{
 		int n = inputReal.length;
 
+		// A bit reversal is carried out on the arrays
 		double[] reversedReal = bitReverse(inputReal);
 		double[] reversedImag = bitReverse(inputImag);
 
+		// Decimation in time butterfly operations
 		for (int m = 2; m <= n; m *= 2)
 		{
 			double omegaReal = Math.cos((-2 * Math.PI) / m);
@@ -67,12 +67,15 @@ public class iFFTThreadColumn implements Runnable
 		return new double[][]{ reversedReal, reversedImag };
 	}
 
+	/*
+	 *  A bit reversal is used to correct for the rearrangement of data in the transform
+	 */
 	private static double[] bitReverse(double[] array)
 	{
 		double[] reversed = new double[array.length];
 		for (int k = 0; k < array.length; k++)
 		{
-			// calculate postion of k in new array
+			// calculate position of k in new array
 			int kNew = k;
 			int r = 0;
 			for (int j = 1; j < array.length; j *= 2)
@@ -96,6 +99,9 @@ public class iFFTThreadColumn implements Runnable
 		return inputImag;
 	}	
 
+	/*
+	 * Sets the values for the given thread
+	 */
 	public iFFTThreadColumn(int start, int end, double[][] inputReal, double[][] inputImag)
 	{
 		this.inputReal = inputReal;
@@ -108,6 +114,10 @@ public class iFFTThreadColumn implements Runnable
 		this.end = end;
 	}
 
+	/*
+	 * This function is ran when the thread is started. It carries out the normal tranform operations
+	 * but only on a given amount of columns.	 
+	 */
 	@Override
 	public void run()
 	{
